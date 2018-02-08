@@ -9,38 +9,48 @@ function click(e) {
           alert("Go to tinder.com first!");
         }
 
+        function dataURItoBlob(dataURI) {
+          var binary = atob(dataURI.split(',')[1]);
+          var array = [];
+          for(var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+          }
+          let what = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+          return what;
+        }
+
         function getBase64Image(img) {
           var canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
 
-          let ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
+          canvas.getContext("2d").drawImage(img, 0, 0)
 
           let dataURL = canvas.toDataURL("image/jpeg");
-          console.log("dataURL", dataURL)
-          let omg = dataURL.replace('data:image/png;base64,', "");
+          let omg = dataURL.replace('data:image/jpeg;base64,', "");
           console.log("dataURL after ", omg);
-          return JSON.stringify(dataURL);
+          return dataURL;
         }
 
+        let imgDiv = document.getElementsByClassName('recCard__img Bgz(cv) Bgp(c) StretchedBox StretchedBox::a Cnt($blank)::a')[0];
+        console.log(imgDiv.style.backgroundImage)
+        let dirtyUrl = imgDiv.style.backgroundImage;
+        let cleanUrl = dirtyUrl.replace('url("', "").replace('")', "");
+        console.log('lshjdif', cleanUrl)
         let img = new Image();
-        img.src = './ppp.jpg'
+        img.src = cleanUrl;
         img.width = 10
         img.height = 10
-        // let dirtyUrl = img.style.backgroundImage;
-        // let cleanUrl = dirtyUrl.replace('url("', "").replace('")', "");
-        // let imgElement = new Image();
-        // imgElement.src = cleanUrl;
+        console.log(img)
         let imgData = getBase64Image(img)
-        localStorage.setItem("imgData", imgData);
+        let bitData = dataURItoBlob(imgData)
+        localStorage.setItem("imgData", bitData);
 
         let worked = localStorage.getItem("imgData")
-        console.log(worked)
 
         let url = "https://api.haystack.ai/api/image/analyze?output=json&apikey=5b958b123ae6930ba13f62b2a000c887";
         let formData = new FormData();
-        formData.append("image", worked);
+        formData.append("image", bitData);
 
 
         let xhttp = new XMLHttpRequest();
