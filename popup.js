@@ -36,7 +36,6 @@ function click(e) {
         console.log(imgDiv.style.backgroundImage)
         let dirtyUrl = imgDiv.style.backgroundImage;
         let cleanUrl = dirtyUrl.replace('url("', "").replace('")', "");
-        console.log('lshjdif', cleanUrl)
         let img = new Image();
         img.src = cleanUrl;
         img.width = 10
